@@ -1,0 +1,24 @@
+# Matrix de Valores:
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 1 0 0 1 0 0 0 0 0 1 0
+0 1 1 1 0 0 0 0 2 0 0 0 0 0 2
+0 0 0 0 2 0 0 1 0 1 0 0 0 1 0
+0 0 0 0 0 3 1 0 0 1 0 1 0 0 0
+0 0 0 0 1 1 2 2 0 0 0 0 0 1 0
+0 0 0 0 0 0 2 1 1 0 1 0 1 0 0
+0 0 0 0 0 1 0 1 0 2 0 2 0 0 0
+0 0 0 0 1 0 0 1 0 0 1 0 1 1 0
+0 0 0 0 0 0 1 0 0 0 1 0 1 0 0
+0 0 0 0 1 0 0 2 0 0 0 0 0 2 0
+0 1 1 1 0 0 0 0 3 1 0 0 0 0 3
+Maximo Valor (Local) =3
+Cadena 1:ATAGACGACAT
+Cadena 2:TTTAGCATGCGCAT
+Cantidad de alineamientos: 3
+Alineamientos Local: 
+TAG
+----------
+CAT
+----------
+CAT
+----------
