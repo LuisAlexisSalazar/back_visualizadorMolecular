@@ -2,11 +2,17 @@ import numpy as np
 import graphviz
 import networkx as nx
 import matplotlib.pyplot as plt
-from utils import KeepWay
+from .utils import KeepWay
 
-h = graphviz.Digraph('H', filename='hello.gv')
+# h = graphviz.Digraph('H', filename='hello.gv')
 G = nx.DiGraph()
 list_G = []
+
+
+def clear_Local():
+    G.clear()
+    list_G.clear()
+
 
 saveAligments = False
 
@@ -36,7 +42,7 @@ def bool_list(way):
     return list_bool
 
 
-class Matrix:
+class ClassSmithWaterman:
     value_interval = -2  # gap
     values_matrix = None  # scores
     matrix_coordinates = None
@@ -60,15 +66,15 @@ class Matrix:
         n, m = len(string1) + 1, len(string2) + 1
         self.debug = debug
         self.plot = plot
-        # --------------Matrix de Valores--------------
+        # --------------ClassNeedlemanWunsch de Valores--------------
         self.values_matrix = np.zeros((n, m), int)
         # ? Rellenar las primera fila y columna con la serie
         # * 0 -2 -4 -6 ...
         # self.values_matrix[0] = np.arange(m) * self.value_interval
         # self.values_matrix[:, 0] = np.arange(n) * self.value_interval
 
-        # --------------Matrix de Coordenadas--------------
-        # ? Matrix donde se guarda lista de tuplas (indices)
+        # --------------ClassNeedlemanWunsch de Coordenadas--------------
+        # ? ClassNeedlemanWunsch donde se guarda lista de tuplas (indices)
         self.matrix_coordinates = []
         for i in range(n):
             self.matrix_coordinates.append([])
@@ -90,8 +96,8 @@ class Matrix:
         if self.debug:
             print("Cadena 1:", string1)
             print("Cadena 2:", string2)
-            print("Matrix de Valores Inicial:", self.values_matrix, end="\n\n")
-            print("Matrix de Coordenadas Inicial:", self.matrix_coordinates, end="\n\n")
+            print("ClassNeedlemanWunsch de Valores Inicial:", self.values_matrix, end="\n\n")
+            print("ClassNeedlemanWunsch de Coordenadas Inicial:", self.matrix_coordinates, end="\n\n")
             print("N = ", n, "M = ", m)
 
     def travel_matrix2(self, matrix, Graph, x, y, matrix_to_mark=None):
@@ -207,8 +213,8 @@ class Matrix:
         # print(self.matrix_coordinates)
         self.create_graph(self.matrix_coordinates)
         if self.debug:
-            print("Matrix de Valores:", self.values_matrix)
-            print("Matrix de Coordenadas:", self.matrix_coordinates)
+            print("ClassNeedlemanWunsch de Valores:", self.values_matrix)
+            print("ClassNeedlemanWunsch de Coordenadas:", self.matrix_coordinates)
 
     def alignments(self, string1, string2):
         n, m = len(string1) + 1, len(string2) + 1
@@ -266,9 +272,33 @@ class Matrix:
             index = next_node
         return list_bool
 
+    def get_aligments(self):
+        list_substring_same = []
+        for way in self.ways:
+            alignment = ""
+            nex_path = False
+            len_way = len(way)
+            for i in range(len_way):
+                if i == len_way - 1:
+                    break
+                if self.values_matrix[way[i][0], way[i][1]] < self.values_matrix[way[i + 1][0], way[i + 1][1]]:
+                    nex_path = True
+                    break
+            if nex_path:
+                continue
+
+            del way[-1]
+
+            for x, y in way:
+                if self.string1[x - 1] == self.string2[y - 1]:
+                    alignment = self.string1[x - 1] + alignment
+
+            list_substring_same.append(alignment)
+        return list_substring_same
+
     def saveTXT(self, substring_same=False):
         # np.savetxt('Arreglo de valores.txt', self.values_matrix, fmt='%.0f')
-        np.savetxt('output.txt', self.values_matrix, fmt='%.0f', header="Matrix de Valores:")
+        np.savetxt('output.txt', self.values_matrix, fmt='%.0f', header="ClassNeedlemanWunsch de Valores:")
         f = open("output.txt", "a")
 
         f.write("Maximo Valor (Local) =" + str(self.max_value) + "\n")
@@ -277,33 +307,8 @@ class Matrix:
 
         if saveAligments:
             if substring_same:
-                # f.write("Cantidad de alineamientos: " + str(len(self.ways)) + "\n")
-                # f.write("Alineamientos Local: " + "\n")
-                list_substring_same = []
-                print("Ways:", self.ways)
-                for way in self.ways:
 
-                    alignment = ""
-                    nex_path = False
-                    len_way = len(way)
-                    for i in range(len_way):
-                        if i == len_way - 1:
-                            break
-                        if self.values_matrix[way[i][0], way[i][1]] < self.values_matrix[way[i + 1][0], way[i + 1][1]]:
-                            nex_path = True
-                            break
-
-                    if nex_path:
-                        continue
-
-                    del way[-1]
-
-                    for x, y in way:
-                        if self.string1[x - 1] == self.string2[y - 1]:
-                            alignment = self.string1[x - 1] + alignment
-
-                    list_substring_same.append(alignment)
-
+                list_substring_same = self.get_aligments()
                 f.write("Cantidad de alineamientos: " + str(len(list_substring_same)) + "\n")
                 f.write("Alineamientos Local: " + "\n")
                 for alig in list_substring_same:

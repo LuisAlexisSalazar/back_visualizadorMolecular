@@ -1,13 +1,15 @@
 from utils import *
-from Meddleman import Matrix
+from Meddleman import ClassNeedlemanWunsch
 
-# ?Link del simulador del algoritmo de Meddleman
+# ?Link del simulador del algoritmo de Needleman-Wunsch
 # https://bioboot.github.io/bimm143_W20/class-material/nw/
 if __name__ == '__main__':
     s1, s2 = readInput()
     # s1,s2 =  "ATTGCCATT", "ATCTTCTT"
-    MatrixMeddleman = Matrix(s1, s2, debug=False, backtracking=True)
+    MatrixMeddleman = ClassNeedlemanWunsch(s1, s2, debug=False, backtracking=True)
     MatrixMeddleman.fun(s1, s2)
     MatrixMeddleman.alignments(s1, s2)
     list_per_alignments = MatrixMeddleman.get_aligments()
-    # MatrixMeddleman.saveTXT()
+    # ClassNeedlemanWunsch.saveTXT()
+    # GATTACA
+    # GTCGACGCA

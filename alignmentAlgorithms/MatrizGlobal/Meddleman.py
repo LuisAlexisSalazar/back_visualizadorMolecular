@@ -3,10 +3,15 @@ import numpy as np
 # import graphviz
 import networkx as nx
 # import matplotlib.pyplot as plt
-from utils import KeepWay
+from .utils import KeepWay
 
 G = nx.DiGraph()
 path_simple = []
+
+
+def clear_Global():
+    G.clear()
+    path_simple.clear()
 
 
 class ValueCondition:
