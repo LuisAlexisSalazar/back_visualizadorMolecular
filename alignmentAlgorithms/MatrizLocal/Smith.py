@@ -2,16 +2,18 @@ import numpy as np
 import graphviz
 import networkx as nx
 import matplotlib.pyplot as plt
-from .utils import KeepWay
+from alignmentAlgorithms.MatrizLocal.utils import KeepWay
+
+# from .utils import KeepWay
 
 # h = graphviz.Digraph('H', filename='hello.gv')
-G = nx.DiGraph()
-list_G = []
+# G = nx.DiGraph()
+# list_G = []
 
 
-def clear_Local():
-    G.clear()
-    list_G.clear()
+# def clear_Local():
+#     G.clear()
+#     list_G.clear()
 
 
 saveAligments = False
@@ -58,6 +60,8 @@ class ClassSmithWaterman:
     end_y = None
     list_index_start = []
     list_index_end = []
+    G = nx.DiGraph()
+    list_G = []
 
     def __init__(self, string1, string2, debug=False, plot=False):
         self.string1 = string1
@@ -91,7 +95,15 @@ class ClassSmithWaterman:
             self.matrix_coordinates[i].append([tuple_index])
         self.matrix_coordinates[0][0] = [()]
         # -------------------------------------------------
-
+        self.G.clear()
+        self.ways.clear()
+        self.list_G.clear()
+        self.list_index_start.clear()
+        self.list_index_end.clear()
+        print("len indexs start:", len(self.list_index_start))
+        print("len indexs end:", len(self.list_index_end))
+        print("G:", self.G.number_of_nodes())
+        print("Len list G:", len(self.list_G))
         # -------Debug--------
         if self.debug:
             print("Cadena 1:", string1)
@@ -141,10 +153,10 @@ class ClassSmithWaterman:
         # print(indices[0])
         # print(indices[1])
         for i in range(len(indices)):
-            list_G.append(nx.DiGraph())
+            self.list_G.append(nx.DiGraph())
 
         index_graph = 1
-        for G_item, index in zip(list_G, indices):
+        for G_item, index in zip(self.list_G, indices):
             x_start = index[0]
             y_start = index[1]
             self.list_index_start.append((x_start, y_start))
@@ -222,7 +234,7 @@ class ClassSmithWaterman:
         # print(self.list_index_start)
         # print(self.list_index_end)
 
-        for index, G_item in enumerate(list_G):
+        for index, G_item in enumerate(self.list_G):
             for path in nx.all_simple_paths(G_item,
                                             source=(self.list_index_start[index][0], self.list_index_start[index][1]),
                                             target=(self.list_index_end[index][0], self.list_index_end[index][1])):

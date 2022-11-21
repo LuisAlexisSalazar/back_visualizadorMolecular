@@ -1,5 +1,5 @@
 from utils import *
-from Meddleman import ClassSmithWaterman
+from Smith import ClassSmithWaterman
 
 # ?Link del simulador del algoritmo de Meddleman (Global)
 # https://bioboot.github.io/bimm143_W20/class-material/nw/
@@ -12,7 +12,7 @@ from Meddleman import ClassSmithWaterman
 # attaaaggtt tataccttcc caggtaacaa accaaccaac tttcgatctc ttgtagatct gttctctaaa cgaactttaa aatctgtgtg gctgtcactc ggctgcatgc ttagtgcact
 if __name__ == '__main__':
     s1, s2 = readInput()
-    MatrixMeddleman = ClassSmithWaterman(s1, s2, debug=False, plot=False)
+    MatrixMeddleman = ClassSmithWaterman(s1, s2, debug=True, plot=False)
     MatrixMeddleman.fun(s1, s2)
     MatrixMeddleman.alignments(s1, s2)
     MatrixMeddleman.saveTXT(substring_same=True)

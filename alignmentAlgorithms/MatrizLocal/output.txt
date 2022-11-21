@@ -1,24 +1,20 @@
 # ClassNeedlemanWunsch de Valores:
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 1 0 0 1 0 0 0 0 0 1 0
-0 1 1 1 0 0 0 0 2 0 0 0 0 0 2
-0 0 0 0 2 0 0 1 0 1 0 0 0 1 0
-0 0 0 0 0 3 1 0 0 1 0 1 0 0 0
-0 0 0 0 1 1 2 2 0 0 0 0 0 1 0
-0 0 0 0 0 0 2 1 1 0 1 0 1 0 0
-0 0 0 0 0 1 0 1 0 2 0 2 0 0 0
-0 0 0 0 1 0 0 1 0 0 1 0 1 1 0
-0 0 0 0 0 0 1 0 0 0 1 0 1 0 0
-0 0 0 0 1 0 0 2 0 0 0 0 0 2 0
-0 1 1 1 0 0 0 0 3 1 0 0 0 0 3
-Maximo Valor (Local) =3
+0 0 0 0 0 0 0 0 0 0 0 0
+0 1 0 1 0 1 0 0 1 0 1 0
+0 0 2 0 0 0 0 0 0 0 0 2
+0 1 0 3 1 1 0 0 1 0 1 0
+0 0 0 1 4 2 0 1 0 0 0 0
+0 1 0 1 2 5 3 1 2 0 1 0
+0 0 0 0 0 3 6 4 2 3 1 0
+0 0 0 0 1 1 4 7 5 3 2 0
+0 1 0 1 0 2 2 5 8 6 4 2
+0 0 0 0 0 0 3 3 6 9 7 5
+0 1 0 1 0 1 1 2 4 7 10 8
+0 0 2 0 0 0 0 0 2 5 8 11
+Maximo Valor (Local) =11
 Cadena 1:ATAGACGACAT
-Cadena 2:TTTAGCATGCGCAT
-Cantidad de alineamientos: 3
+Cadena 2:ATAGACGACAT
+Cantidad de alineamientos: 1
 Alineamientos Local: 
-TAG
-----------
-CAT
-----------
-CAT
+ATAGACGACAT
 ----------

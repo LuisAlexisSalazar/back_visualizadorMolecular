@@ -4,14 +4,16 @@ import numpy as np
 import networkx as nx
 # import matplotlib.pyplot as plt
 from .utils import KeepWay
-
-G = nx.DiGraph()
-path_simple = []
+# from utils import KeepWay
 
 
-def clear_Global():
-    G.clear()
-    path_simple.clear()
+# G = nx.DiGraph()
+# path_simple = []
+
+
+# def clear_Global():
+#     G.clear()
+#     path_simple.clear()
 
 
 class ValueCondition:
@@ -23,37 +25,37 @@ class ValueCondition:
         return self.value
 
 
-# *Recursivo para total de alineamientos
-def travel_matrix(matrix, x, y):
-    if x == 0 and y == 0:
-        return 0
-
-    amount_tuples = len(matrix[x][y])
-    for i in range(amount_tuples):
-        travel_matrix(matrix, matrix[x][y][i][0], matrix[x][y][i][1])
-        G.add_edge((x, y), matrix[x][y][i])
-
-
-# *Recursivo a bucle
-def travel_matrix_to_one_simple_path(matrix, x_index, y_index):
-    while not (x_index == 0 and y_index == 0):
-        path_simple.append(matrix[x_index][y_index][0])
-        x_index = path_simple[-1][0]
-        y_index = path_simple[-1][1]
+# # *Recursivo para total de alineamientos
+# def travel_matrix(matrix, x, y):
+#     if x == 0 and y == 0:
+#         return 0
+#
+#     amount_tuples = len(matrix[x][y])
+#     for i in range(amount_tuples):
+#         travel_matrix(matrix, matrix[x][y][i][0], matrix[x][y][i][1])
+#         G.add_edge((x, y), matrix[x][y][i])
 
 
-def create_graph(matrix):
-    # *Iniciamos en las esquina
-    x_start = len(matrix) - 1
-    y_start = len(matrix[0]) - 1
-    travel_matrix(matrix, x_start, y_start)
+# # *Recursivo a bucle
+# def travel_matrix_to_one_simple_path(matrix, x_index, y_index):
+#     while not (x_index == 0 and y_index == 0):
+#         path_simple.append(matrix[x_index][y_index][0])
+#         x_index = path_simple[-1][0]
+#         y_index = path_simple[-1][1]
 
 
-def get_one_path(matrix):
-    x_start = len(matrix) - 1
-    y_start = len(matrix[0]) - 1
-    path_simple.append((len(matrix) - 1, len(matrix[0]) - 1))
-    travel_matrix_to_one_simple_path(matrix, x_start, y_start)
+# def create_graph(matrix):
+#     # *Iniciamos en las esquina
+#     x_start = len(matrix) - 1
+#     y_start = len(matrix[0]) - 1
+#     travel_matrix(matrix, x_start, y_start)
+
+
+# def get_one_path(matrix):
+#     x_start = len(matrix) - 1
+#     y_start = len(matrix[0]) - 1
+#     path_simple.append((len(matrix) - 1, len(matrix[0]) - 1))
+#     travel_matrix_to_one_simple_path(matrix, x_start, y_start)
 
 
 # *way: Lista de tuplas de indices
@@ -106,6 +108,8 @@ class Matrix:
     string1 = None
     string2 = None
     backtracking = False
+    G = nx.DiGraph()
+    path_simple = []
 
     def __init__(self, string1, string2, debug=False, backtracking=False):
         self.string1 = string1
@@ -139,12 +143,48 @@ class Matrix:
         # -------------------------------------------------
 
         # -------Debug--------
+        self.G.clear()
+        self.path_simple.clear()
+        self.ways.clear()
+        # print("G:", self.G.number_of_nodes())
+        # print("Way:", self.ways)
+        # print("path_simple:", self.path_simple)
+        # print("len path_simple:", len(self.path_simple))
         if self.debug:
             print("Cadena 1:", string1)
             print("Cadena 2:", string2)
             print("Matrix de Valores Inicial:", self.values_matrix, end="\n\n")
             print("Matrix de Coordenadas Inicial:", self.matrix_coordinates, end="\n\n")
             print("N = ", n, "M = ", m)
+
+    # *Recursivo para total de alineamientos
+    def travel_matrix(self, matrix, x, y):
+        if x == 0 and y == 0:
+            return 0
+
+        amount_tuples = len(matrix[x][y])
+        for i in range(amount_tuples):
+            self.travel_matrix(matrix, matrix[x][y][i][0], matrix[x][y][i][1])
+            self.G.add_edge((x, y), matrix[x][y][i])
+
+    # *Recursivo a bucle
+    def travel_matrix_to_one_simple_path(self, matrix, x_index, y_index):
+        while not (x_index == 0 and y_index == 0):
+            self.path_simple.append(matrix[x_index][y_index][0])
+            x_index = self.path_simple[-1][0]
+            y_index = self.path_simple[-1][1]
+
+    def create_graph(self, matrix):
+        # *Iniciamos en las esquina
+        x_start = len(matrix) - 1
+        y_start = len(matrix[0]) - 1
+        self.travel_matrix(matrix, x_start, y_start)
+
+    def get_one_path(self, matrix):
+        x_start = len(matrix) - 1
+        y_start = len(matrix[0]) - 1
+        self.path_simple.append((len(matrix) - 1, len(matrix[0]) - 1))
+        self.travel_matrix_to_one_simple_path(matrix, x_start, y_start)
 
     # ?Link del simuladore del algoritmo de Meddleman
     # https://bioboot.github.io/bimm143_W20/class-material/nw/
@@ -190,7 +230,7 @@ class Matrix:
                     print("Mayores valor con sus indices:", list_value_indexs)
         # *Generar grafo a travez de la matrix de coordenadas
         if self.backtracking:
-            create_graph(self.matrix_coordinates)
+            self.create_graph(self.matrix_coordinates)
 
         if self.debug:
             print("Matrix de Valores:", self.values_matrix)
@@ -200,19 +240,19 @@ class Matrix:
         if self.backtracking:
             n, m = len(string1) + 1, len(string2) + 1
 
-            for path in nx.all_simple_paths(G, source=(n - 1, m - 1), target=(0, 0)):
+            for path in nx.all_simple_paths(self.G, source=(n - 1, m - 1), target=(0, 0)):
                 self.ways.append(path)
 
             if self.debug:
                 print("Caminos para las alineaciones:", self.ways)
         else:
-            get_one_path(matrix=self.matrix_coordinates)
+            self.get_one_path(matrix=self.matrix_coordinates)
             if self.debug:
-                print("Camino simple:", path_simple)
+                print("Camino simple:", self.path_simple)
 
     def getOneAligment(self):
 
-        list_bool_to_alignment = fix_bool_list(path_simple)
+        list_bool_to_alignment = fix_bool_list(self.path_simple)
         alignment = self.getAlignmentFix(list_bool_to_alignment)
         return alignment
 
