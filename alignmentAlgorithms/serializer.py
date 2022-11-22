@@ -10,7 +10,14 @@ class InputGlobalSerializer(serializers.Serializer):
 class InputLocalSerializer(serializers.Serializer):
     string1 = serializers.CharField()
     string2 = serializers.CharField()
-    # backtracking = serializers.BooleanField()
+
+
+class InputStringSerializer(serializers.Serializer):
+    string = serializers.CharField()
+
+
+class InputStarSerializer(serializers.Serializer):
+    strings = serializers.ListField(child=InputStringSerializer())
 
 # class AlignmentSerializer(serializers.ListField):
 #     child = serializers.CharField()

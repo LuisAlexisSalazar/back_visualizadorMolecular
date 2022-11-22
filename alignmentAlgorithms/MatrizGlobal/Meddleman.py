@@ -4,6 +4,8 @@ import numpy as np
 import networkx as nx
 # import matplotlib.pyplot as plt
 from .utils import KeepWay
+
+
 # from utils import KeepWay
 
 
@@ -250,6 +252,11 @@ class Matrix:
             if self.debug:
                 print("Camino simple:", self.path_simple)
 
+    def get_score(self, string1, string2):
+        n = len(string1)
+        m = len(string2)
+        return self.values_matrix[n, m]
+
     def getOneAligment(self):
 
         list_bool_to_alignment = fix_bool_list(self.path_simple)
@@ -289,6 +296,8 @@ class Matrix:
     def get_aligments(self):
         alignments = []
         if self.backtracking:
+            # *La cantidad de alineaciones son 5
+            self.ways = self.ways[:5]
             for i in range(len(self.ways)):
                 list_bool_to_alignment = fix_bool_list(self.ways[i])
                 alignment = self.getAlignmentFix(list_bool_to_alignment)

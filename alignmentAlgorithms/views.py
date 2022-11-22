@@ -3,10 +3,39 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .MatrizGlobal.Meddleman import Matrix
 from .MatrizLocal.Smith import ClassSmithWaterman
-from alignmentAlgorithms.serializer import InputGlobalSerializer, InputLocalSerializer
+from alignmentAlgorithms.serializer import InputGlobalSerializer, InputLocalSerializer, InputStarSerializer
+from .AlineamientoStar.Global import MatrixScoreAllString
+
+ADN = "CGAT"
+ARN = "CGAU"
 
 
-# Create your views here.
+def contains_certain_characters(string, characters):
+    return all(char in characters for char in string)
+
+
+# def checkRules(string, rules):
+#     list_boolean = []
+#     for r in rules:
+#         index = string.rfind(r)
+#         expr = True if index != -1 else False
+#         list_boolean.append(expr)
+#     return all(list_boolean)
+
+
+# https://commons.wikimedia.org/wiki/File:Difference_DNA_RNA-ES.svg
+def get_type_string(string):
+    isARN = contains_certain_characters(ARN, string)
+    isADN = contains_certain_characters(ADN, string)
+    isProtein = isARN and isADN
+
+    if isProtein:
+        return "Proteina"
+    elif isARN:
+        return "ARN"
+    else:
+        return "ADN"
+
 
 class GlobalView(APIView):
     serializer_class = InputGlobalSerializer
@@ -14,16 +43,26 @@ class GlobalView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            string1 = serializer.validated_data["string1"]
-            string2 = serializer.validated_data["string2"]
+            string1 = serializer.validated_data["string1"].upper()
+            string2 = serializer.validated_data["string2"].upper()
             backtracking = serializer.validated_data["backtracking"]
-            MatrixMeddleman = Matrix(string1, string2, debug=True, backtracking=backtracking)
+            MatrixMeddleman = Matrix(string1, string2, debug=False, backtracking=backtracking)
             MatrixMeddleman.fun(string1, string2)
             MatrixMeddleman.alignments(string1, string2)
             list_per_alignments = MatrixMeddleman.get_aligments()
-            # clear_Global()
+            score = MatrixMeddleman.get_score(string1, string2)
+
+            dataResponse = {
+                'alignments': list_per_alignments,
+                'type_string1': get_type_string(string1),
+                'type_string2': get_type_string(string2),
+                'len_string1': len(string1),
+                'len_string2': len(string2),
+                'score': score
+            }
+
             del MatrixMeddleman
-            return Response({'alignments': list_per_alignments})
+            return Response(dataResponse)
 
 
 class LocalView(APIView):
@@ -32,10 +71,43 @@ class LocalView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            string1 = serializer.validated_data["string1"]
-            string2 = serializer.validated_data["string2"]
+            string1 = serializer.validated_data["string1"].upper()
+            string2 = serializer.validated_data["string2"].upper()
             MatrixSmith = ClassSmithWaterman(string1, string2, debug=False)
             MatrixSmith.fun(string1, string2)
             MatrixSmith.alignments(string1, string1)
             list_per_alignments = MatrixSmith.get_aligments()
-            return Response({'alignments': list_per_alignments})
+            score = MatrixSmith.get_score()
+            dataResponse = {
+                'alignments': list_per_alignments,
+                'type_string1': get_type_string(string1),
+                'type_string2': get_type_string(string2),
+                'len_string1': len(string1),
+                'len_string2': len(string2),
+                'score': score
+            }
+            return Response(dataResponse)
+
+
+# { "strings": ["ATTGCCATT","ATGGCCATT","ATCCAATTTT","ATCTTCTT","ACTGACC"] }
+class StarView(APIView):
+    # serializer_class = InputStarSerializer
+    # serializer_class = InputLocalSerializer
+
+    def post(self, request):
+        strings = self.request.data.get('strings', [])
+        temp_strings = []
+        for s in strings:
+            if s.isalpha():
+                temp_strings.append(s)
+        strings = temp_strings
+        strings = list(map(lambda x: x.upper(), strings))
+        types_strings = list(map(lambda x: get_type_string(x), strings))
+        # print(strings)
+        # print(types_strings)
+        listNone = []
+        for i in range(len(strings)):
+            listNone.append(None)
+        data = MatrixScoreAllString(strings, listNone)
+        data["types_strings"] = types_strings
+        return Response(data)

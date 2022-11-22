@@ -308,6 +308,9 @@ class ClassSmithWaterman:
             list_substring_same.append(alignment)
         return list_substring_same
 
+    def get_score(self):
+        return self.max_value
+
     def saveTXT(self, substring_same=False):
         # np.savetxt('Arreglo de valores.txt', self.values_matrix, fmt='%.0f')
         np.savetxt('output.txt', self.values_matrix, fmt='%.0f', header="ClassNeedlemanWunsch de Valores:")
