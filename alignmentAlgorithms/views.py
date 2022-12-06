@@ -3,8 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .MatrizGlobal.Meddleman import Matrix
 from .MatrizLocal.Smith import ClassSmithWaterman
-from alignmentAlgorithms.serializer import InputGlobalSerializer, InputLocalSerializer, InputStarSerializer
+from alignmentAlgorithms.serializer import InputGlobalSerializer, InputLocalSerializer, InputStarSerializer, \
+    InputNussinovSerializer
 from .AlineamientoStar.Global import MatrixScoreAllString
+from .PrediccionEstructuraSecuencial import Nussinov
 
 ADN = "CGAT"
 ARN = "CGAU"
@@ -86,6 +88,29 @@ class LocalView(APIView):
                 'len_string2': len(string2),
                 'score': score
             }
+            return Response(dataResponse)
+
+
+class NussinovView(APIView):
+    serializer_class = InputNussinovSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            string = serializer.validated_data["string"].upper()
+
+            MatrixNussinov = Nussinov.MatrixNussinov(string, string, debug=False, backtracking=False)
+            MatrixNussinov.fun(string, string)
+            MatrixNussinov.alignments(string, string)
+            sequence, structure = MatrixNussinov.getSecuencePatron()
+
+            dataResponse = {
+                'sequence': sequence,
+                'structure': structure,
+                'len_string': len(string),
+                'type': get_type_string(string),
+            }
+
             return Response(dataResponse)
 
 

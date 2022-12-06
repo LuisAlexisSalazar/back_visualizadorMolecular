@@ -12,6 +12,10 @@ class InputLocalSerializer(serializers.Serializer):
     string2 = serializers.CharField()
 
 
+class InputNussinovSerializer(serializers.Serializer):
+    string = serializers.CharField()
+
+
 class InputStringSerializer(serializers.Serializer):
     string = serializers.CharField()
 
